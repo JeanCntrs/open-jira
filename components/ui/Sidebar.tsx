@@ -1,6 +1,8 @@
-import { Box, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { useContext } from 'react';
+import { Box, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import InboxOutlinedIcon from '@mui/icons-material/InboxOutlined';
 import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
+import { UIContext } from '../../context/ui';
 
 interface SidebarProps {
 
@@ -9,10 +11,12 @@ interface SidebarProps {
 const menuItems: string[] = ['Inbox', 'Starred', 'Send Email', 'Drafts'];
 
 export const Sidebar: React.FC<SidebarProps> = () => {
+    const { isSidemenuOpen } = useContext(UIContext)
+
     return (
         <Drawer
             anchor="left"
-            open={true}
+            open={isSidemenuOpen}
             onClose={() => console.log('cerrando...')}
         >
             <Box sx={{ width: 250 }}>
