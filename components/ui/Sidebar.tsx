@@ -11,13 +11,13 @@ interface SidebarProps {
 const menuItems: string[] = ['Inbox', 'Starred', 'Send Email', 'Drafts'];
 
 export const Sidebar: React.FC<SidebarProps> = () => {
-    const { isSidemenuOpen } = useContext(UIContext)
+    const { isSidemenuOpen, closeSideMenu } = useContext(UIContext)
 
     return (
         <Drawer
             anchor="left"
             open={isSidemenuOpen}
-            onClose={() => console.log('cerrando...')}
+            onClose={closeSideMenu}
         >
             <Box sx={{ width: 250 }}>
                 <Box sx={{ padding: '5px 10px' }}>
