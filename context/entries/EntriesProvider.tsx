@@ -1,4 +1,6 @@
 import { useReducer } from "react";
+import { v4 as uuidv4 } from 'uuid';
+import { Entry } from "../../interfaces";
 import { EntriesContext, entriesReducer } from "./";
 
 interface EntriesProviderProps {
@@ -6,14 +8,33 @@ interface EntriesProviderProps {
 }
 
 export interface EntriesState {
-    entries: [];
+    entries: Entry[];
 }
 
 const ENTRIES_INITIAL_STATE: EntriesState = {
-    entries: []
+    entries: [
+        {
+            _id: uuidv4(),
+            description: 'aaaa aaaa aaaa',
+            status: 'pending',
+            createdAt: Date.now()
+        },
+        {
+            _id: uuidv4(),
+            description: 'bbbb bbbb bbbb',
+            status: 'inProgress',
+            createdAt: Date.now() - 1000000
+        },
+        {
+            _id: uuidv4(),
+            description: 'cccc cccc cccc',
+            status: 'finished',
+            createdAt: Date.now() - 100000
+        }
+    ]
 }
 
-export const UIProvider: React.FC<EntriesProviderProps> = ({ children }) => {
+export const EntriesProvider: React.FC<EntriesProviderProps> = ({ children }) => {
     const [state, dispatch] = useReducer(entriesReducer, ENTRIES_INITIAL_STATE)
 
     return (
