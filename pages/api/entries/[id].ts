@@ -18,11 +18,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         case 'PUT':
             return updateEntry(req, res);
 
+        case 'GET':
+            return getEntry(req, res);
+
         default:
             return res.status(400).json({ message: 'Invalid method' });
     }
-
-    res.status(200).json({ message: 'Example' })
 }
 
 const updateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
@@ -50,9 +51,24 @@ const updateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     } catch (error: any) {
         console.log('error: ', error);
         await db.disconnect();
-        res.status(400).json({message: error.errors.status.message});
+        res.status(400).json({ message: error.errors.status.message });
     }
 
     // entryToUpdate.description = description;
     // entryToUpdate.save();
+}
+
+const getEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+    const { id } = req.query;
+
+    await db.connect();
+    const entry = await Entry.findById(id);
+    await db.disconnect();
+
+    if (!entry) {
+        await db.disconnect();
+        return res.status(400).json({ message: 'Entry not found' });
+    }
+
+    return res.status(200).json(entry);
 }
