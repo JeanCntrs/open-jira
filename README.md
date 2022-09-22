@@ -6,3 +6,9 @@ docker-compose up -d
 ```
 
 * -d means __detached__
+
+Rebuild the node modules and launch the application
+```
+yarn install
+yarn dev
+```
