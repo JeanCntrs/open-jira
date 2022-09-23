@@ -1,3 +1,4 @@
+import { ChangeEvent, useState, useMemo } from 'react';
 import { Button, capitalize, Card, CardActions, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Radio, RadioGroup, TextField } from "@mui/material";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -11,6 +12,24 @@ interface EntryPageProps {
 const validStatus: EntryStatus[] = ['pending', 'inProgress', 'finished'];
 
 const EntryPage: React.FC<EntryPageProps> = () => {
+    const [inputValue, setInputValue] = useState('');
+    const [status, setStatus] = useState<EntryStatus>('pending');
+    const [touched, setTouched] = useState(false);
+
+    const isNotValid = useMemo(() => inputValue.length <= 0 && touched, [inputValue, touched]);
+
+    const onTextFieldChanged = (event: ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value);
+    }
+
+    const onStatusChanged = (event: ChangeEvent<HTMLInputElement>) => {
+        setStatus(event.target.value as EntryStatus);
+    }
+
+    const onSave = () => {
+        console.log({ inputValue, status });
+    }
+
     return (
         <Layout title="... ... ...">
             <Grid
@@ -21,7 +40,7 @@ const EntryPage: React.FC<EntryPageProps> = () => {
                 <Grid item xs={12} sm={8} md={6}>
                     <Card>
                         <CardHeader
-                            title="Entry:"
+                            title={`Entry: ${inputValue}`}
                             subheader={`Created at: 32 minutes ago`}
                         />
 
@@ -33,10 +52,19 @@ const EntryPage: React.FC<EntryPageProps> = () => {
                                 autoFocus
                                 multiline
                                 label="New entry"
+                                value={inputValue}
+                                onBlur={() => setTouched(true)}
+                                onChange={onTextFieldChanged}
+                                helperText={isNotValid && 'Enter a value'}
+                                error={isNotValid}
                             />
                             <FormControl>
                                 <FormLabel>Estado:</FormLabel>
-                                <RadioGroup row>
+                                <RadioGroup
+                                    row
+                                    value={status}
+                                    onChange={onStatusChanged}
+                                >
                                     {
                                         validStatus.map(option => (
                                             <FormControlLabel
@@ -55,6 +83,8 @@ const EntryPage: React.FC<EntryPageProps> = () => {
                                 startIcon={<SaveOutlinedIcon />}
                                 variant="contained"
                                 fullWidth
+                                onClick={onSave}
+                                disabled={inputValue.length <= 0}
                             >
                                 Save
                             </Button>
@@ -65,8 +95,8 @@ const EntryPage: React.FC<EntryPageProps> = () => {
 
             <IconButton sx={{
                 position: 'fixed',
-                botton: 30,
-                right:30,
+                bottom: 30,
+                right: 30,
                 backgroundColor: 'red'
             }}>
                 <DeleteOutlineIcon />
