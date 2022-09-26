@@ -21,7 +21,8 @@ const entrySchema = new Schema({
     }
 });
 
-// if the model is already created. use the created
+// If the model is already created. use the created
+// IEntry has the properties of the entry interface and methods of the entry model
 const EntryModel: Model<IEntry> = mongoose.models.Entry || mongoose.model('Entry', entrySchema)
 
 export default EntryModel;

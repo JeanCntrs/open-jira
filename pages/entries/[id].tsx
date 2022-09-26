@@ -4,19 +4,18 @@ import { Button, capitalize, Card, CardActions, CardContent, CardHeader, FormCon
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Layout } from "../../components/layouts";
-import { EntryStatus } from "../../interfaces";
-import { isValidObjectId } from 'mongoose';
+import { Entry, EntryStatus } from "../../interfaces";
+import { dbEntries } from '../../database';
 
 interface EntryPageProps {
-
+    entry: Entry
 }
 
 const validStatus: EntryStatus[] = ['pending', 'inProgress', 'finished'];
 
-const EntryPage: React.FC<EntryPageProps> = (props) => {
-    console.log('props', props)
-    const [inputValue, setInputValue] = useState('');
-    const [status, setStatus] = useState<EntryStatus>('pending');
+const EntryPage: React.FC<EntryPageProps> = ({ entry }) => {
+    const [inputValue, setInputValue] = useState(entry.description);
+    const [status, setStatus] = useState<EntryStatus>(entry.status);
     const [touched, setTouched] = useState(false);
 
     const isNotValid = useMemo(() => inputValue.length <= 0 && touched, [inputValue, touched]);
@@ -34,7 +33,7 @@ const EntryPage: React.FC<EntryPageProps> = (props) => {
     }
 
     return (
-        <Layout title="... ... ...">
+        <Layout title={inputValue.substring(0, 20) + '...'}>
             <Grid
                 container
                 justifyContent="center"
@@ -43,8 +42,8 @@ const EntryPage: React.FC<EntryPageProps> = (props) => {
                 <Grid item xs={12} sm={8} md={6}>
                     <Card>
                         <CardHeader
-                            title={`Entry: ${inputValue}`}
-                            subheader={`Created at: 32 minutes ago`}
+                            title={'Entry:'}
+                            subheader={`Created at: ${entry.createdAt} minutes ago`}
                         />
 
                         <CardContent>
@@ -111,7 +110,9 @@ const EntryPage: React.FC<EntryPageProps> = (props) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { id } = ctx.params as { id: string };
 
-    if (!isValidObjectId(id)) {
+    const entry = await dbEntries.getEntryById(id);
+
+    if (!entry) {
         return {
             redirect: {
                 destination: '/',
@@ -122,7 +123,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     return {
         props: {
-            id
+            entry
         }
     }
 }
