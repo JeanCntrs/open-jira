@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useMemo } from 'react';
+import { ChangeEvent, useState, useMemo, useContext } from 'react';
 import { GetServerSideProps } from 'next';
 import { Button, capitalize, Card, CardActions, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Radio, RadioGroup, TextField } from "@mui/material";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
@@ -6,6 +6,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Layout } from "../../components/layouts";
 import { Entry, EntryStatus } from "../../interfaces";
 import { dbEntries } from '../../database';
+import { EntriesContext } from '../../context/entries';
 
 interface EntryPageProps {
     entry: Entry
@@ -14,6 +15,8 @@ interface EntryPageProps {
 const validStatus: EntryStatus[] = ['pending', 'inProgress', 'finished'];
 
 const EntryPage: React.FC<EntryPageProps> = ({ entry }) => {
+    const { updateEntry } = useContext(EntriesContext)
+
     const [inputValue, setInputValue] = useState(entry.description);
     const [status, setStatus] = useState<EntryStatus>(entry.status);
     const [touched, setTouched] = useState(false);
@@ -29,7 +32,15 @@ const EntryPage: React.FC<EntryPageProps> = ({ entry }) => {
     }
 
     const onSave = () => {
-        console.log({ inputValue, status });
+        if (inputValue.trim().length === 0) return;
+
+        const updatedEntry: Entry = {
+            ...entry,
+            status,
+            description: inputValue
+        }
+
+        updateEntry(updatedEntry, true);
     }
 
     return (
