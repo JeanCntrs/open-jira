@@ -4,6 +4,8 @@ import { Entry } from "../../interfaces";
 import { UIContext } from '../../context/ui';
 import { useRouter } from 'next/router';
 
+import { dateFunctions } from '../../utils';
+
 interface EntryCardProps {
     entry: Entry;
 }
@@ -39,7 +41,7 @@ export const EntryCard: React.FC<EntryCardProps> = ({ entry }) => {
                     <Typography sx={{ whiteSpace: 'pre-line' }}>{entry.description}</Typography>
                 </CardContent>
                 <CardContent sx={{ display: 'flex', justifyContent: 'end', paddingRight: '2' }}>
-                    <Typography variant="body2">30 minutes ago</Typography>
+                    <Typography variant="body2">{dateFunctions.getFormatDistanceToNow(entry.createdAt)}</Typography>
                 </CardContent>
             </CardActionArea>
         </Card>

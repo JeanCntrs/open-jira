@@ -7,6 +7,7 @@ import { Layout } from "../../components/layouts";
 import { Entry, EntryStatus } from "../../interfaces";
 import { dbEntries } from '../../database';
 import { EntriesContext } from '../../context/entries';
+import { dateFunctions } from '../../utils';
 
 interface EntryPageProps {
     entry: Entry
@@ -54,7 +55,7 @@ const EntryPage: React.FC<EntryPageProps> = ({ entry }) => {
                     <Card>
                         <CardHeader
                             title={'Entry:'}
-                            subheader={`Created at: ${entry.createdAt} minutes ago`}
+                            subheader={`Created: ${dateFunctions.getFormatDistanceToNow(entry.createdAt)}`}
                         />
 
                         <CardContent>
